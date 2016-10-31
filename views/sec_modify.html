@@ -1,0 +1,60 @@
+{{template "header"}}
+<title>修改权限 - 配置管理平台</title>
+<style type="text/css">
+	#secForm .row{
+    			margin-bottom: 5px;
+    		}
+</style>
+<body>
+<div class="navbar navbar-default navbar-fixed-top">
+	<div class="container">{{template "navbar" .}}</div>
+</div>
+<div class="container">
+	<form class="form-horizontal" id="secForm" method="post" action="/sec" enctype="multipart/form-data">
+		<input type="hidden" id="sid" name="sid" value="{{.SecId}}">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<label for="roleName" class="control-label col-md-4">角色名:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="text" id="roleName" name="roleName" value="{{.Sec.RoleName}}"></div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<label for="operID" class="control-label col-md-4">操作ID:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="text" id="operID" name="operID" value="{{.Sec.OperID}}"></div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			
+			<div class="col-md-6">
+				<div class="row">
+					<label for="dplStatus" class="control-label col-md-4">显示状态:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="text" id="dplStatus" name="dplStatus" value="{{.Sec.DplStatus}}"></div>
+				</div>
+
+			</div>
+		</div>
+
+		<button type="submit" class="btn btn-default" style="float:right">保存</button>
+	</form>
+</div>
+<script type="text/javascript" src="/static/js/jquery-1.11.1.js"></script>
+<!-- 	<script type="text/javascript" src="http://cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+-->
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="/static/js/jquery.form.js"></script>
+<script type="text/javascript" src="/static/js/get-time-operator.js"></script>
+<!-- <script type="text/javascript">
+	var systime=getSysTime();
+	var oper=getOper();
+	$("#secTime").val(systime);
+	$("#operator").val(oper);
+</script> -->
+</body>
+</html>

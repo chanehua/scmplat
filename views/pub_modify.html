@@ -1,0 +1,153 @@
+{{template "header"}}
+<title>修改发布任务 - 配置管理平台</title>
+<style type="text/css">
+	#pubForm .row{
+    			margin-bottom: 5px;
+    		}
+</style>
+<body>
+<div class="navbar navbar-default navbar-fixed-top">
+	<div class="container">{{template "navbar" .}}</div>
+</div>
+<div class="container">
+	<form class="form-horizontal" id="pubForm" method="post" action="/pub" enctype="multipart/form-data">
+		<input type="hidden" id="pid" name="pid" value="{{.PubId}}">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<label for="projectName" class="control-label col-md-4">项目名:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="text" id="projectName" name="projectName" value="{{.Pub.ProjectName}}"></div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<label for="version" class="control-label col-md-4">版本号:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="text" id="version" name="version" value="{{.Pub.Version}}"></div>
+				</div>
+
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<label for="pubType" class="control-label col-md-4">发布类型:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="text" id="pubType" name="pubType" value="{{.Pub.PubType}}"></div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<label for="targetSer" class="control-label col-md-4">目标服务器:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="text" id="targetSer" name="targetSer" value="{{.Pub.TargetServer}}"></div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<label for="sshUser" class="control-label col-md-4">发布帐号:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="text" id="sshUser" name="sshUser" value="{{.Pub.SshUser}}"></div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<label for="sshPwd" class="control-label col-md-4">密码:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="password" id="sshPwd" name="sshPwd" value="{{.Pub.SshPwd}}"></div>
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<label for="sshPort" class="control-label col-md-4">SSH端口:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="text" id="sshPort" name="sshPort" value="{{.Pub.SshPort}}"></div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<label for="sshKey" class="control-label col-md-4">ssh密钥:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="file" id="sshKey" name="sshKey" value="{{.Pub.SshKey}}"></div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<label for="pubSrcDir" class="control-label col-md-4">发布源目录:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="text" id="pubSrcDir" name="pubSrcDir" value="{{.Pub.PubSrcDir}}"></div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<label for="pubDstDir" class="control-label col-md-4">发布目标目录:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="text" id="pubDstDir" name="pubDstDir" value="{{.Pub.PubDstDir}}"></div>
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					<label for="pubTime" class="control-label col-md-4">发布时间:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="text" id="pubTime" name="pubTime" value="" readonly=""></div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<label for="operator" class="control-label col-md-4">操作人:</label>
+					<div class="col-md-8">
+						<input class="form-control" type="text" id="operator" name="operator" value="" readonly=""></div>
+				</div>
+
+			</div>
+		</div>
+		<div class="row">
+			<label for="remark" class="control-label col-md-2">备注:</label>
+			<div class="col-md-10">
+				<textarea class="form-control" id="remark" name="remark" ></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<label for="upload" class="control-label col-md-4"></label>
+				<div class="col-md-8">
+					<input class="form-control" type="file" id="upload" name="upload" multiple ></div>
+			</div>
+		</div>
+		<button type="submit" class="btn btn-default" style="float:right">保存</button>
+	</form>
+</div>
+<script type="text/javascript" src="/static/js/jquery-1.11.1.js"></script>
+<!-- 	<script type="text/javascript" src="http://cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+-->
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="/static/js/jquery.form.js"></script>
+<script type="text/javascript" src="/static/js/get-time-operator.js"></script>
+<script type="text/javascript">
+	var systime=getSysTime();
+	var oper=getOper();
+	$("#pubTime").val(systime);
+	$("#operator").val(oper);
+</script>
+</body>
+</html>
