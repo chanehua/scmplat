@@ -26,6 +26,7 @@
 				<div class="row">
 					<label for="sType" class="control-label col-md-4">类型:</label>
 					<div class="col-md-8">
+<<<<<<< HEAD
 						<select class="form-control" style="width:150px;" id="sType" name="sType" > 
 							<option></option>
 							<option>stop</option>
@@ -35,6 +36,9 @@
 							<option>plat</option>
 						</select> 
 					</div>
+=======
+						<input class="form-control" type="text" style="width:150px;" id="sType" name="sType"></div>
+>>>>>>> ade7291b6b1b9b7f60929a1501813edf0da0913e
 				</div>
 			</div>
 		</div>
