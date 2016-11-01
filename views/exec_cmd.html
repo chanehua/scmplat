@@ -1,0 +1,329 @@
+{{template "header"}}
+<title>启停管理 - 配置管理平台</title>
+<style type="text/css">
+    		#exec_container th{
+    			white-space: nowrap;
+    			text-overflow: ellipsis;
+    		}
+
+    		#execModal .row{
+    			margin-bottom: 5px;
+    		}
+
+    		#execModal .modal-dialog{
+    			width: 800px;
+    		}
+
+    		.table td{
+    			white-space: nowrap;
+    			text-overflow: ellipsis;
+    		}
+
+    		#alert_tip{
+    			width: 500px;
+    			margin: 50px auto 0;
+    		}
+    		.pagination{
+				margin: 0px 0px 20px 0px;
+				/*position: fixed;
+				left: 1100px;*/
+			}
+    	</style>
+<body>
+<div class="navbar navbar-default navbar-fixed-top">
+	<div class="container">{{template "navbar" .}}</div>
+</div>
+<div class="modal fade" id="execModal" tabindex="-1" role="dialog" aria-labelledby="execModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="execModalLabel">增加启停任务</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal" id="execForm" method="post" action="/exec" enctype="multipart/form-data">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="row">
+								<label for="projectName" class="control-label col-md-4">项目名:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="projectName" name="projectName"></div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="row">
+								<label for="version" class="control-label col-md-4">版本号:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="version" name="version"></div>
+							</div>
+
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="row">
+								<label for="operType" class="control-label col-md-4">启停类型:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="operType" name="operType"></div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="row">
+								<label for="targetSer" class="control-label col-md-4">目标服务器:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="targetSer" name="targetSer"></div>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="row">
+								<label for="sshUser" class="control-label col-md-4">发布帐号:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="sshUser" name="sshUser"></div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="row">
+								<label for="sshPwd" class="control-label col-md-4">密码:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="password" id="sshPwd" name="sshPwd"></div>
+							</div>
+
+						</div>
+
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="row">
+								<label for="sshPort" class="control-label col-md-4">SSH端口:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="sshPort" name="sshPort"></div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="row">
+								<label for="sshKey" class="control-label col-md-4">ssh密钥:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="file" id="sshKey" name="sshKey" ></div>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="row">
+								<label for="execScript" class="control-label col-md-4">执行脚本:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="execScript" name="execScript"></div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="row">
+								<label for="execTime" class="control-label col-md-4">执行时间:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="execTime" name="execTime" value="" readonly=""></div>
+							</div>
+						</div>
+
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="row">
+								<label for="operator" class="control-label col-md-4">操作人:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="operator" name="operator" value="" readonly=""></div>
+							</div>
+
+						</div>
+					</div>
+					<div class="row">
+						<label for="remark" class="control-label col-md-2">备注:</label>
+						<div class="col-md-10">
+							<textarea class="form-control" id="remark" name="remark"></textarea>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<button type="submit" class="btn btn-primary">保存</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="exec_container" class="container">
+	<h1>执行任务列表</h1>
+	{{template "search" .}}
+	<button type="submit" class="btn btn-default fx-option-btn" data-toggle="modal" data-target="#execModal" data-value="add" id="addButton" style="display:{{.StAddButton}};" >添加</button>
+	<button type="submit" class="btn btn-default fx-option-btn" data-value="update" style="display:{{.StModifyButton}};" >修改</button>
+	<button type="submit" class="btn btn-default fx-option-btn" data-value="delete" style="display:{{.StDelButton}};" >删除</button>
+	<button type="submit" class="btn btn-default fx-option-btn" data-value="execute" style="display:{{.StExecButton}};" >执行</button>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<!-- <th class="bs-checkbox " style="text-align: center; vertical-align: middle; width: 36px;" data-field="state" tabindex="0">
+					<div class="th-inner ">
+						<input name="checkAll" type="checkbox"></div>
+					<div class="fht-cell" style="width: 35px;"></div>
+				</th> -->
+				<!-- <th>#</th> -->
+				<th>项目名</th>
+				<th>版本号</th>
+				<th>启停类型</th>
+				<th>目标服务器</th>
+				<th>发布帐号</th>
+				<!-- <th>密码</th> -->
+				<th>SSH端口</th>
+				<th>ssh密钥</th>
+				<th>执行脚本</th>
+				<th>执行时间</th>
+				<th>操作人</th>
+				<th>备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{range $index, $elem := .execs}}
+			<tr data-object="{{$elem}}">
+				<td class="bs-checkbox " style="text-align: center; vertical-align: middle; width: 36px;"  data-field="state" tabindex="0">
+					<div class="th-inner ">
+						<input name="checkItem" type="checkbox" data-id="{{.ExecId}}"/></div>
+					<div class="fht-cell" style="width: 35px;"></div>
+				</td>
+				<!-- <td>{{.ExecId}}</td> -->
+				<td>{{.ProjectName}}</td>
+				<td>{{.Version}}</td>
+				<td>{{.OperType}}</td>
+				<td>{{.TargetServer}}</td>
+				<td>{{.SshUser}}</td>
+				<!-- <td>{{.SshPwd}}</td> -->
+				<td>{{.SshPort}}</td>
+				<td>{{.SshKey}}</td>
+				<td>{{.ExecScript}}</td>
+				<td>{{dateformat .ExecTime "2006-01-02 15:04:05"}}</td>
+				<td>{{.Opertor}}</td>
+				<td>{{.Remark}}</td>
+			</tr>
+			{{end}}
+		</tbody>
+	</table>
+	{{template "pagination" .}}
+</div>
+<div id="alert_tip" class="alert alert-warning alert-dismissable" style="display:none;">
+	<button type="button" class="close" data-dismiss="alert"
+			aria-hidden="true">
+		&times;
+	</button>
+	警告！请选择。
+</div>
+<div>
+	
+</div>
+<script type="text/javascript" src="/static/js/jquery-1.11.1.js"></script>
+<!-- 	<script type="text/javascript" src="http://cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+-->
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="/static/js/jquery.form.js"></script>
+<script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-ui-timepicker-addon.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-paginator.min.js"></script>
+<script type="text/javascript" src="/static/js/get-time-operator.js"></script>
+<script>	
+	$('button.fx-option-btn').on('click', function () {
+		var role = $(this).data('value'),currentRowDataId;
+		
+		switch (role) {
+			case 'add':
+				var systime=getSysTime();
+				var oper=getOper();
+				$("#execTime").val(systime);
+				$("#operator").val(oper);
+				break;
+			case 'update':
+				currentRowDataId = $('input[name="checkItem"]').filter(':checked').data('id');
+				if(!currentRowDataId){
+					$('#alert_tip').show();
+					setTimeout(function () {
+						$('#alert_tip').hide();
+					}, 5000);
+					return;
+				}
+				window.location="/exec/modify?eid=" + currentRowDataId;
+				break;
+			case 'delete': 
+				var allCheckedCheckbox = $('input[name="checkItem"]').filter(':checked'),
+					idsStr = '';
+				allCheckedCheckbox.each(function (i, chkItem) {
+					idsStr += $(chkItem).data('id') + ',';
+				});
+				idsStr = idsStr.substring(0, idsStr.length - 1);
+				if(!idsStr){
+					$('#alert_tip').show();
+					setTimeout(function () {
+						$('#alert_tip').hide();
+					}, 5000);
+					return;
+				}
+				window.location="/exec/delete?eid=" + idsStr;
+				break;
+			case 'execute':
+				var allCheckedCheckbox = $('input[name="checkItem"]').filter(':checked'),
+					idsStr = '';
+				allCheckedCheckbox.each(function (i, chkItem) {
+					idsStr += $(chkItem).data('id') + ',';
+				});
+				idsStr = idsStr.substring(0, idsStr.length - 1);
+				if(!idsStr){
+					$('#alert_tip').show();
+					setTimeout(function () {
+						$('#alert_tip').hide();
+					}, 5000);
+					return;
+				}
+				window.location="/exec/execute?eid=" + idsStr;
+				break;
+		}
+	});
+	initCheckbox();
+	/*$("#addButton").attr("disabled",{{.AddBtState}});*/
+	/*paginator*/
+	$(function () {
+    $("#page").bootstrapPaginator({
+      currentPage: '{{.PageNo}}',
+      totalPages: '{{.TotalPage}}',
+      bootstrapMajorVersion: 3,
+      size: "small",
+      onPageClicked: function(e,originalEvent,type,page){
+        window.location.href = "/exec?p=" + page + "&sprojectName="+
+        "{{.SprojectName}}" +"&sversion=" + "{{.Sversion}}" +
+        "&sType="+"{{.Stype}}"+"&startTime="+"{{.StartTime}}"+
+        "&endTime="+"{{.EndTime}}"+"&stargetSer="+"{{.StargetSer}}"
+      }
+    });
+  });
+
+
+	jQuery(function () {  
+        // 时间设置  
+        jQuery('#startTime').datetimepicker({  
+            timeFormat: "HH:mm:ss",  
+            dateFormat: "yy-mm-dd"  
+        });
+
+  		jQuery('#endTime').datetimepicker({  
+            timeFormat: "HH:mm:ss",  
+            dateFormat: "yy-mm-dd"  
+        });
+    });
+    //获取select值
+	$("#sType").find("option:selected").text();
+</script>
+</body>
+</html>

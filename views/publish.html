@@ -1,0 +1,353 @@
+{{template "header"}}
+<title>发布管理 - 配置管理平台</title>
+<style type="text/css">
+    		#pub_container th{
+    			white-space: nowrap;
+    			text-overflow: ellipsis;
+    		}
+
+    		#pubModal .row{
+    			margin-bottom: 5px;
+    		}
+
+    		#pubModal .modal-dialog{
+    			width: 800px;
+    		}
+
+    		.table td{
+    			white-space: nowrap;
+    			text-overflow: ellipsis;
+    		}
+
+    		#alert_tip{
+    			width: 500px;
+    			margin: 50px auto 0;
+    		}
+    		.pagination{
+				margin: 0px 0px 20px 0px;
+				position: fixed;
+				left: 1100px;
+			}
+    	</style>
+<body>
+<div class="navbar navbar-default navbar-fixed-top">
+	<div class="container">{{template "navbar" .}}</div>
+</div>
+<div class="modal fade" id="pubModal" tabindex="-1" role="dialog" aria-labelledby="pubModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="pubModalLabel">增加发布任务</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal" id="pubForm" method="post" action="/pub" enctype="multipart/form-data">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="row">
+								<label for="projectName" class="control-label col-md-4">项目名:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="projectName" name="projectName"></div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="row">
+								<label for="version" class="control-label col-md-4">版本号:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="version" name="version"></div>
+							</div>
+
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="row">
+								<label for="pubType" class="control-label col-md-4">发布类型:</label>
+								<div class="col-md-8">
+									<select class="form-control"  id="pubType" name="pubType" >
+										<option></option>
+										<option>prc</option>
+										<option>patch</option>
+										<option>plat</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="row">
+								<label for="targetSer" class="control-label col-md-4">目标服务器:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="targetSer" name="targetSer"></div>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="row">
+								<label for="sshUser" class="control-label col-md-4">发布帐号:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="sshUser" name="sshUser"></div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="row">
+								<label for="sshPwd" class="control-label col-md-4">密码:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="password" id="sshPwd" name="sshPwd"></div>
+							</div>
+
+						</div>
+
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="row">
+								<label for="sshPort" class="control-label col-md-4">SSH端口:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="sshPort" name="sshPort"></div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="row">
+								<label for="sshKey" class="control-label col-md-4">ssh密钥:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="file" id="sshKey" name="sshKey" ></div>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="row">
+								<label for="pubSrcDir" class="control-label col-md-4">发布源目录:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="pubSrcDir" name="pubSrcDir"></div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="row">
+								<label for="pubDstDir" class="control-label col-md-4">发布目标目录:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="pubDstDir" name="pubDstDir"></div>
+							</div>
+
+						</div>
+
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="row">
+								<label for="pubTime" class="control-label col-md-4">发布时间:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="pubTime" name="pubTime" value="" readonly=""></div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="row">
+								<label for="operator" class="control-label col-md-4">操作人:</label>
+								<div class="col-md-8">
+									<input class="form-control" type="text" id="operator" name="operator" value="" readonly=""></div>
+							</div>
+
+						</div>
+					</div>
+					<div class="row">
+						<label for="remark" class="control-label col-md-2">备注:</label>
+						<div class="col-md-10">
+							<textarea class="form-control" id="remark" name="remark"></textarea>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<label for="upload" class="control-label col-md-4"></label>
+							<div class="col-md-8">
+								<input class="form-control" type="file" id="upload" name="upload" multiple ></div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<button type="submit" class="btn btn-primary">保存</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="pub_container" class="container">
+	<h1>发布列表</h1>
+	{{template "search" .}}
+	<button type="submit" class="btn btn-default fx-option-btn" data-toggle="modal" data-target="#pubModal" data-value="add" style="display:{{.PubAddButton}};" >添加</button>
+	<button type="submit" class="btn btn-default fx-option-btn" data-value="update" style="display:{{.PubModifyButton}};" >修改</button>
+	<button type="submit" class="btn btn-default fx-option-btn" data-value="delete" style="display:{{.PubDelButton}};" >删除</button>
+	<button type="submit" class="btn btn-default fx-option-btn" data-value="publish" style="display:{{.PubPublishButton}};" >发布</button>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<!-- <th class="bs-checkbox " style="text-align: center; vertical-align: middle; width: 36px;" data-field="state" tabindex="0">
+					<div class="th-inner ">
+						<input name="checkAll" type="checkbox"></div>
+					<div class="fht-cell" style="width: 35px;"></div>
+				</th> -->
+				<!-- <th>#</th> -->
+				<th>项目名</th>
+				<th>版本号</th>
+				<th>发布类型</th>
+				<th>目标服务器</th>
+				<th>发布帐号</th>
+				<!-- <th>密码</th> -->
+				<th>SSH端口</th>
+				<th>ssh密钥</th>
+				<th>发布源目录</th>
+				<th>发布目标目录</th>
+				<th>发布时间</th>
+				<th>操作人</th>
+				<th>备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			{{range $index, $elem := .pubs}}
+			<tr data-object="{{$elem}}">
+				<td class="bs-checkbox " style="text-align: center; vertical-align: middle; width: 36px;"  data-field="state" tabindex="0">
+					<div class="th-inner ">
+						<input name="checkItem" type="checkbox" data-id="{{.PubId}}"/></div>
+					<div class="fht-cell" style="width: 35px;"></div>
+				</td>
+				<!-- <td>{{.PubId}}</td> -->
+				<td>{{.ProjectName}}</td>
+				<td>{{.Version}}</td>
+				<td>{{.PubType}}</td>
+				<td>{{.TargetServer}}</td>
+				<td>{{.SshUser}}</td>
+				<!-- <td>{{.SshPwd}}</td> -->
+				<td>{{.SshPort}}</td>
+				<td>{{.SshKey}}</td>
+				<td>{{.PubSrcDir}}</td>
+				<td>{{.PubDstDir}}</td>
+				<td>{{dateformat .PubTime "2006-01-02 15:04:05"}}</td>
+				<td>{{.Opertor}}</td>
+				<td>{{.Remark}}</td>
+			</tr>
+			{{end}}
+		</tbody>
+	</table>
+	{{template "pagination" .}}
+</div>
+<div id="alert_tip" class="alert alert-warning alert-dismissable" style="display:none;">
+	<button type="button" class="close" data-dismiss="alert"
+			aria-hidden="true">
+		&times;
+	</button>
+	警告！请选择。
+</div>
+<div>
+	
+</div>
+<script type="text/javascript" src="/static/js/jquery-1.11.1.js"></script>
+<!-- 	<script type="text/javascript" src="http://cdn.staticfile.org/jquery/2.0.3/jquery.min.js"></script>
+-->
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="/static/js/jquery.form.js"></script>
+<script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-ui-timepicker-addon.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-paginator.min.js"></script>
+<script type="text/javascript" src="/static/js/get-time-operator.js"></script>
+<script>	
+	$('button.fx-option-btn').on('click', function () {
+		var role = $(this).data('value'),currentRowDataId;
+		
+		switch (role) {
+			case 'add':
+				var systime=getSysTime();
+				var oper=getOper();
+				$("#pubTime").val(systime);
+				$("#operator").val(oper);
+				break;
+			case 'update':
+				currentRowDataId = $('input[name="checkItem"]').filter(':checked').data('id');
+				if(!currentRowDataId){
+					$('#alert_tip').show();
+					setTimeout(function () {
+						$('#alert_tip').hide();
+					}, 5000);
+					return;
+				}
+				window.location="/pub/modify?pid=" + currentRowDataId;
+				break;
+			case 'delete': 
+				var allCheckedCheckbox = $('input[name="checkItem"]').filter(':checked'),
+					idsStr = '';
+				allCheckedCheckbox.each(function (i, chkItem) {
+					idsStr += $(chkItem).data('id') + ',';
+				});
+				idsStr = idsStr.substring(0, idsStr.length - 1);
+				if(!idsStr){
+					$('#alert_tip').show();
+					setTimeout(function () {
+						$('#alert_tip').hide();
+					}, 5000);
+					return;
+				}
+				window.location="/pub/delete?pid=" + idsStr;
+				break;
+			case 'publish':
+				var allCheckedCheckbox = $('input[name="checkItem"]').filter(':checked'),
+					idsStr = '';
+				allCheckedCheckbox.each(function (i, chkItem) {
+					idsStr += $(chkItem).data('id') + ',';
+				});
+				idsStr = idsStr.substring(0, idsStr.length - 1);
+				if(!idsStr){
+					$('#alert_tip').show();
+					setTimeout(function () {
+						$('#alert_tip').hide();
+					}, 5000);
+					return;
+				}
+				window.location="/pub/publish?pid=" + idsStr;
+				break;
+		}
+	});
+	initCheckbox();
+
+	/*paginator*/
+	$(function () {
+    $("#page").bootstrapPaginator({
+      currentPage: '{{.PageNo}}',
+      totalPages: '{{.TotalPage}}',
+      bootstrapMajorVersion: 3,
+      size: "small",
+      onPageClicked: function(e,originalEvent,type,page){
+        window.location.href = "/pub?p=" + page + "&sprojectName="+
+        "{{.SprojectName}}" +"&sversion=" + "{{.Sversion}}" +
+        "&sType="+"{{.Stype}}"+"&startTime="+"{{.StartTime}}"+
+        "&endTime="+"{{.EndTime}}"+"&stargetSer="+"{{.StargetSer}}"
+      }
+    });
+  });
+
+	jQuery(function () {  
+        // 时间设置  
+        jQuery('#startTime').datetimepicker({  
+            timeFormat: "HH:mm:ss",  
+            dateFormat: "yy-mm-dd"  
+        });
+
+  		jQuery('#endTime').datetimepicker({  
+            timeFormat: "HH:mm:ss",  
+            dateFormat: "yy-mm-dd"  
+        });
+    });
+
+    //获取select值
+    $("#sType").find("option:selected").text();
+    $("#pubType").find("option:selected").text();
+</script>
+</body>
+</html>
