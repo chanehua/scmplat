@@ -3,7 +3,7 @@ SCM平台使用beego框架，采用MVC架构,golang作为后台开发可视化�
 
 # scmplat部署
 #### 1.安装mysql，需要将my.cnf文件中的AUTOCOMMIT=0设置为AUTOCOMMIT=1自动提交事务；
-#### 2.下载工程；
+#### 2.下载工程：go get github.com/chanehua/scmplat；
 #### 3.执行dbinit.sql初始化数据库；
 #### 4.修改conf/app.conf文件中的：
 mysql数据库信息：  
