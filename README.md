@@ -7,37 +7,26 @@
 #### 3.执行dbinit.sql初始化数据库；
 #### 4.修改conf/app.conf文件中的：
 mysql数据库信息:
-
   
 [db]dbhost = "127.0.0.1"
-
   
 dbport = "3306"
-
   
 dbuser = "SCMPLAT"
-
   
 passwd = "123456"
-
   
 dbname = "SCMPLAT"
-
   
 ldap服务器信息，主要修改用户名以及密码:
-
   
 [ldap]ldapdomain = "ldap.xxx.yyy.com"
-
   
 ldapport = "389"
-
   
 binduame = "xxx yyy"
-
   
 bindpwd = "123456"
-
   
 basedn = "ou=xx,ou=yy-users,dc=zz,dc=com"
 #### 5.执行start_scmplat.sh启动程序，stop_scmplat.sh停止程序
