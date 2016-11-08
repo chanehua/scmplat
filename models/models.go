@@ -76,12 +76,28 @@ type ExecMg struct {
 	Version      string    `orm:"size(50)"`
 	TargetServer string    `orm:"size(50)"`
 	OperType     string    `orm:"size(50)"` // 启停类型
-	SshUser      string    `orm:"size(20)"` // 发布帐号
+	SshUser      string    `orm:"size(20)"` // 用户名
 	SshPort      string    `orm:"size(10)"` // SSH端口
 	SshPwd       string    `orm:"size(50)"`
 	SshKey       string    `orm:"size(200)"` // SSH KEY路径
 	ExecScript   string    `orm:"size(200)"`
 	ExecTime     time.Time `orm:"index"`
+	Opertor      string    `orm:"size(50)"`
+	Remark       string    `orm:"null"`
+}
+
+type DockerMg struct {
+	DockerId     int64     `orm:"pk;auto;index"`
+	ProjectName  string    `orm:"size(50)"`
+	Version      string    `orm:"size(50)"`
+	TargetServer string    `orm:"size(50)"`
+	OperType     string    `orm:"size(50)"` // 操作类型
+	SshUser      string    `orm:"size(20)"` // 用户名
+	SshPort      string    `orm:"size(10)"` // SSH端口
+	SshPwd       string    `orm:"size(50)"`
+	SshKey       string    `orm:"size(200)"` // SSH KEY路径
+	OsType       string    `orm:"size(20)"`  // 系统类型
+	Ctime        time.Time `orm:"index"`
 	Opertor      string    `orm:"size(50)"`
 	Remark       string    `orm:"null"`
 }
@@ -104,7 +120,7 @@ func RegisterDB() {
 
 	//register db models
 	orm.RegisterModel(new(UserInfo), new(ProcManerge),
-		new(PubMg), new(ExecMg), new(SecMg))
+		new(PubMg), new(ExecMg), new(SecMg), new(DockerMg))
 	//register db driver("mysql" is default driver,can ignor)
 	orm.RegisterDriver(dbdriver, orm.DRMySQL)
 	//register database
@@ -735,4 +751,169 @@ func CheckSec(operId map[string]string, uname string) error {
 
 	}
 	return err
+}
+
+// 获取docker管理任务列表
+func GetDockerList(page string, pageSize int64, searchT,
+	fields []string) (dockers []*DockerMg, err error) {
+	o := orm.NewOrm()
+
+	p, _ := strconv.ParseInt(page, 10, 64)
+	dockers = make([]*DockerMg, 0)
+
+	qs := o.QueryTable("docker_mg").Filter(fields[0], searchT[0]).Filter(fields[1],
+		searchT[1]).Filter(fields[2], searchT[2]).Filter(fields[3],
+		searchT[3]).Filter(fields[4], searchT[4]).Filter(fields[5],
+		searchT[5]).OrderBy("docker_id")
+	if pageSize > 0 {
+		qs = qs.Limit(pageSize, (p-1)*pageSize)
+	}
+	_, err = qs.All(&dockers)
+	return dockers, err
+}
+
+// 增加docker管理任务
+func AddDocker(dockerList map[string]string, uname string) error {
+	o := orm.NewOrm()
+	cTime, _ := time.Parse(timeForm, dockerList["cTime"])
+
+	docker := &DockerMg{
+		ProjectName:  dockerList["projectName"],
+		Version:      dockerList["version"],
+		OperType:     dockerList["operType"],
+		TargetServer: dockerList["targetSer"],
+		SshUser:      dockerList["sshUser"],
+		SshPwd:       dockerList["sshPwd"],
+		SshPort:      dockerList["sshPort"],
+		SshKey:       dockerList["sshKey"],
+		OsType:       dockerList["osType"],
+		Ctime:        cTime,
+		Opertor:      dockerList["operator"],
+		Remark:       dockerList["remark"],
+	}
+
+	_, err := o.Insert(docker)
+	if err != nil {
+		return err
+	}
+	// 调用操作记录函数
+	err = LogRecord(uname, "DockerMg", "add", docker)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetDocker(did string) (*DockerMg, error) {
+	didNum, err := strconv.ParseInt(did, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+
+	docker := new(DockerMg)
+	o := orm.NewOrm()
+	qs := o.QueryTable("docker_mg")
+	err = qs.Filter("docker_id", didNum).One(docker)
+	if err != nil {
+		return nil, err
+	}
+
+	return docker, err
+}
+
+// 修改docker管理任务
+func ModifyDocker(dockerList map[string]string, uname string) error {
+	didNum, err := strconv.ParseInt(dockerList["did"], 10, 64)
+	if err != nil {
+		return err
+	}
+	cTime, _ := time.Parse(timeForm, dockerList["cTime"])
+
+	o := orm.NewOrm()
+	docker := &DockerMg{DockerId: didNum}
+	if o.Read(docker) == nil {
+		docker.ProjectName = dockerList["projectName"]
+		docker.Version = dockerList["version"]
+		docker.OperType = dockerList["operType"]
+		docker.TargetServer = dockerList["targetSer"]
+		docker.SshUser = dockerList["sshUser"]
+		docker.SshPwd = dockerList["sshPwd"]
+		docker.SshPort = dockerList["sshPort"]
+		docker.OsType = dockerList["osType"]
+		docker.Ctime = cTime
+		docker.Opertor = dockerList["operator"]
+		docker.Remark = dockerList["remark"]
+		// 判断密钥是否更新
+		if dockerList["sshKey"] != "" {
+			docker.SshKey = dockerList["sshKey"]
+		}
+
+		_, err = o.Update(docker)
+		if err != nil {
+			return err
+		}
+	}
+	// 调用操作记录函数
+	err = LogRecord(uname, "DockerMg", "modify", docker)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// 删除docker管理任务
+func DeleteDockers(didStr, uname string) error {
+	var didNum int64
+	var err error
+	var docker *DockerMg
+	dids := strings.Split(didStr, ",")
+	o := orm.NewOrm()
+
+	for i, _ := range dids {
+		didNum, err = strconv.ParseInt(dids[i], 10, 64)
+		if err != nil {
+			return err
+		}
+		docker = &DockerMg{DockerId: didNum}
+		if o.Read(docker) == nil {
+			_, err = o.Delete(docker)
+			if err != nil {
+				return err
+			}
+		}
+		// 调用操作记录函数
+		err = LogRecord(uname, "DockerMg", "delete", docker)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func StartTask(didStr, uname string) error {
+	o := orm.NewOrm()
+
+	Dockers := make([]*DockerMg, 0)
+	// 获取 QueryBuilder 对象. 需要指定数据库驱动参数。
+	qb, err := orm.NewQueryBuilder("mysql")
+	if err != nil {
+		return err
+	}
+	// 构建查询对象
+	qb.Select("*").From("SCMPLAT.docker_mg").Where("docker_id").In(didStr)
+	// 导出SQL语句
+	sql := qb.String()
+
+	// 执行SQL语句
+	o.Raw(sql).QueryRows(&Dockers)
+	// 到远程主机进行docker管理操作
+	ExecDocker(Dockers)
+
+	// 调用操作记录函数
+	err = LogRecord(uname, "DockerMg", "start", Dockers)
+	if err != nil {
+		return err
+	}
+	return nil
+
 }

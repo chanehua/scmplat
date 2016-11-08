@@ -67,12 +67,14 @@ func (c *ExecController) Get() {
 	uname := c.Ctx.GetCookie("uname")
 	if len(uname) == 0 {
 		c.Data["SecMg"] = "none"
+		c.Data["DockerMg"] = "none"
 	} else {
 		operId := map[string]string{"SecMg": "none",
 			"StAddButton":    "none",
 			"StModifyButton": "none",
 			"StDelButton":    "none",
 			"StExecButton":   "none",
+			"DockerMg":       "none",
 		}
 		err := models.CheckSec(operId, uname)
 		if err != nil {
@@ -83,6 +85,7 @@ func (c *ExecController) Get() {
 		c.Data["StModifyButton"] = operId["StModifyButton"]
 		c.Data["StDelButton"] = operId["StDelButton"]
 		c.Data["StExecButton"] = operId["StExecButton"]
+		c.Data["DockerMg"] = operId["DockerMg"]
 	}
 }
 

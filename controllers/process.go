@@ -69,12 +69,14 @@ func (c *ProcController) Get() {
 	uname := c.Ctx.GetCookie("uname")
 	if len(uname) == 0 {
 		c.Data["SecMg"] = "none"
+		c.Data["DockerMg"] = "none"
 	} else {
 		operId := map[string]string{"SecMg": "none",
 			"ProcAddButton":    "none",
 			"ProcModifyButton": "none",
 			"ProcDelButton":    "none",
 			"ProcCreateButton": "none",
+			"DockerMg":         "none",
 		}
 		err := models.CheckSec(operId, uname)
 		if err != nil {
@@ -85,6 +87,7 @@ func (c *ProcController) Get() {
 		c.Data["ProcModifyButton"] = operId["ProcModifyButton"]
 		c.Data["ProcDelButton"] = operId["ProcDelButton"]
 		c.Data["ProcCreateButton"] = operId["ProcCreateButton"]
+		c.Data["DockerMg"] = operId["DockerMg"]
 	}
 }
 

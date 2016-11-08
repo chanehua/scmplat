@@ -33,4 +33,6 @@ INSERT INTO `SCMPLAT`.`sec_mg` (`sec_id`, `role_name`, `oper_id`, `dpl_status`) 
 INSERT INTO `SCMPLAT`.`sec_mg` (`sec_id`, `role_name`, `oper_id`, `dpl_status`) VALUES ('24', 'operator', 'StModifyButton', 'inline-block');
 INSERT INTO `SCMPLAT`.`sec_mg` (`sec_id`, `role_name`, `oper_id`, `dpl_status`) VALUES ('25', 'operator', 'StDelButton', 'none');
 INSERT INTO `SCMPLAT`.`sec_mg` (`sec_id`, `role_name`, `oper_id`, `dpl_status`) VALUES ('26', 'operator', 'StExecButton', 'inline-block');
+INSERT INTO `SCMPLAT`.`sec_mg` (`sec_id`, `role_name`, `oper_id`, `dpl_status`) VALUES ('27', 'admin', 'DockerMg', 'inline-block');
+INSERT INTO `SCMPLAT`.`sec_mg` (`sec_id`, `role_name`, `oper_id`, `dpl_status`) VALUES ('28', 'operator', 'DockerMg', 'none');
 

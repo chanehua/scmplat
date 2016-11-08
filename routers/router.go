@@ -12,8 +12,10 @@ func init() {
 	beego.Router("/pub", &controllers.PubController{})
 	beego.Router("/exec", &controllers.ExecController{})
 	beego.Router("/sec", &controllers.SecController{})
+	beego.Router("/docker", &controllers.DockerController{})
 	beego.AutoRouter(&controllers.ProcController{})
 	beego.AutoRouter(&controllers.PubController{})
 	beego.AutoRouter(&controllers.ExecController{})
 	beego.AutoRouter(&controllers.SecController{})
+	beego.AutoRouter(&controllers.DockerController{})
 }

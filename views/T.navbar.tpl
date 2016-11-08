@@ -6,6 +6,7 @@
 		<li {{if .IsProc}}class="active"{{end}}><a href="/proc?p=1">进程管理</a></li>
 		<li {{if .IsPub}}class="active"{{end}}><a href="/pub?p=1">发布管理</a></li>
 		<li {{if .IsExec}}class="active"{{end}}><a href="/exec?p=1">启停管理</a></li>
+		<li {{if .IsDocker}}class="active"{{end}} style="display:{{.DockerMg}};" ><a href="/docker?p=1">Docker管理</a></li>
 		<li {{if .IsSec}}class="active"{{end}} style="display:{{.SecMg}};"><a href="/sec?p=1">权限管理</a></li>
 		<!-- <li {{if .IsdbMg}}class="active"{{end}}><a href="/db">db管理</a></li> -->
 	</ul>

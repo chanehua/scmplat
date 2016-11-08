@@ -65,12 +65,14 @@ func (c *PubController) Get() {
 	uname := c.Ctx.GetCookie("uname")
 	if len(uname) == 0 {
 		c.Data["SecMg"] = "none"
+		c.Data["DockerMg"] = "none"
 	} else {
 		operId := map[string]string{"SecMg": "none",
 			"PubAddButton":     "none",
 			"PubModifyButton":  "none",
 			"PubDelButton":     "none",
 			"PubPublishButton": "none",
+			"DockerMg":         "none",
 		}
 		err := models.CheckSec(operId, uname)
 		if err != nil {
@@ -81,6 +83,7 @@ func (c *PubController) Get() {
 		c.Data["PubModifyButton"] = operId["PubModifyButton"]
 		c.Data["PubDelButton"] = operId["PubDelButton"]
 		c.Data["PubPublishButton"] = operId["PubPublishButton"]
+		c.Data["DockerMg"] = operId["DockerMg"]
 	}
 }
 

@@ -36,7 +36,12 @@ func LogRecord(oper, operModel, operAction string, operData interface{}) error {
 			records += fmt.Sprintf("[%s] [%s] [%s] [%s] %v \n",
 				operTime, operModel, operAction, oper, operData[i])
 		}
-	case *PubMg, *ExecMg, *ProcManerge:
+	case []*DockerMg:
+		for i, _ := range operData {
+			records += fmt.Sprintf("[%s] [%s] [%s] [%s] %v \n",
+				operTime, operModel, operAction, oper, operData[i])
+		}
+	case *PubMg, *ExecMg, *ProcManerge, *DockerMg:
 		records = fmt.Sprintf("[%s] [%s] [%s] [%s] %v \n",
 			operTime, operModel, operAction, oper, operData)
 	default:

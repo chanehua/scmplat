@@ -18,13 +18,17 @@ func (c *HomeController) Get() {
 	uname := c.Ctx.GetCookie("uname")
 	if len(uname) == 0 {
 		c.Data["SecMg"] = "none"
+		c.Data["DockerMg"] = "none"
 	} else {
-		operId := map[string]string{"SecMg": "none"}
+		operId := map[string]string{"SecMg": "none",
+			"DockerMg": "none",
+		}
 		err := models.CheckSec(operId, uname)
 		if err != nil {
 			beego.Error(err)
 		}
 		c.Data["SecMg"] = operId["SecMg"]
+		c.Data["DockerMg"] = operId["DockerMg"]
 	}
 
 }
